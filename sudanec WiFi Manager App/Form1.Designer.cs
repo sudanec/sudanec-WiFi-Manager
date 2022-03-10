@@ -41,16 +41,16 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowTemplate.Height = 25;
-            this.dataGridView1.Size = new System.Drawing.Size(474, 321);
+            this.dataGridView1.Size = new System.Drawing.Size(1165, 321);
             this.dataGridView1.TabIndex = 0;
             // 
-            // WiFiManager_Form1
+            // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(574, 564);
+            this.ClientSize = new System.Drawing.Size(1238, 564);
             this.Controls.Add(this.dataGridView1);
-            this.Name = "WiFiManager_Form1";
+            this.Name = "Form1";
             this.Text = "sudanec WiFi Manager";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
