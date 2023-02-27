@@ -5,7 +5,8 @@ namespace sudanec_WiFi_Manager_App
         public Form1()
         {
             try
-            { 
+            {
+                this.StartPosition = FormStartPosition.CenterScreen;
                 InitializeComponent();
                 button2.Enabled = CheckExcelPresent();
                 SetTooltips();
@@ -50,53 +51,57 @@ namespace sudanec_WiFi_Manager_App
             }
         }
 
-        private void LoadNetworksToGrid()
+        //private void LoadNetworksToGrid()
+        private async Task LoadNetworksToGrid()
         {
+            LoadingForm frm = new LoadingForm();
             try
             {
-                System.Threading.Thread.Sleep(5000);
+                frm.Show();
+                frm.TopMost = true;
+                frm.Refresh();
                 System.Data.DataTable dt = new System.Data.DataTable();
-                dt.Columns.Add("Network", typeof(string));
-                dt.Columns.Add("Type", typeof(string));
-                dt.Columns.Add("Radio", typeof(string));
-                dt.Columns.Add("Vendor", typeof(string));
-                dt.Columns.Add("Auth", typeof(string));
-                dt.Columns.Add("Cipher", typeof(string));
-                dt.Columns.Add("Password", typeof(string));
-                //dt.Columns.Add("Roaming", typeof(string));
-                //dt.Columns.Add("Data Limit", typeof(string));
-                //dt.Columns.Add("Over Data Limit", typeof(string));
-
-                int i, j;
-                List<string> wifis = WiFiData.getAllWiFiProfiles();
-                List<string> wifiDetails = new List<string>();
-
-
-                for (i = 0; i < wifis.Count; i++)
+                dt = await Task.Run(() =>
                 {
-                    System.Data.DataRow row1 = dt.NewRow();
-                    wifiDetails = WiFiData.getWiFiDetails(wifis[i]);
-                    row1["Network"] = wifis[i];
-                    for(j = 0; j < wifiDetails.Count; j++) { row1[j+1] = wifiDetails[j]; }
-                    dt.Rows.Add(row1);
-                }
+                    System.Threading.Thread.Sleep(7000);
+                    dt.Columns.Add("Network", typeof(string));
+                    dt.Columns.Add("Type", typeof(string));
+                    dt.Columns.Add("Radio", typeof(string));
+                    dt.Columns.Add("Vendor", typeof(string));
+                    dt.Columns.Add("Auth", typeof(string));
+                    dt.Columns.Add("Cipher", typeof(string));
+                    dt.Columns.Add("Password", typeof(string));
+                    //dt.Columns.Add("Roaming", typeof(string));
+                    //dt.Columns.Add("Data Limit", typeof(string));
+                    //dt.Columns.Add("Over Data Limit", typeof(string));
 
-                //var ctl = dataGridView1.AsyncState as System.Windows.Forms.Control;
-                //if (ctl != null && ctl.InvokeRequired)
-                //{
-                //    ctl.Invoke(new Action<IAsyncResult>(LoadNetworksToGrid), dataGridView1);
-                //} else
-                //{
+                    int i, j;
+                    List<string> wifis = WiFiData.getAllWiFiProfiles();
+                    List<string> wifiDetails = new List<string>();
 
-                    dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-                    dataGridView1.AutoResizeColumns();
-                    dataGridView1.ReadOnly = true;
-                    dataGridView1.DataSource = dt;
-                //}
+
+                    for (i = 0; i < wifis.Count; i++)
+                    {
+                        System.Data.DataRow row1 = dt.NewRow();
+                        wifiDetails = WiFiData.getWiFiDetails(wifis[i]);
+                        row1["Network"] = wifis[i];
+                        for (j = 0; j < wifiDetails.Count; j++) { row1[j + 1] = wifiDetails[j]; }
+                        dt.Rows.Add(row1);
+                    }
+                    return dt;
+                });
+                dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+                dataGridView1.AutoResizeColumns();
+                dataGridView1.ReadOnly = true;
+                dataGridView1.DataSource = dt;
             }
             catch (Exception ex)
             {
                 System.Windows.Forms.MessageBox.Show("Following error occurred when loading known WiFi profiles: " + ex.Message, "sudanec WiFi Manager .::. Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                frm.Close();
             }
         }
 

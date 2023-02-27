@@ -38,9 +38,6 @@ namespace sudanec_WiFi_Manager_App
                         resultList.Add(GetFirstLine(cmdOutput));
                     }
                 }
-                //System.Threading.Thread.Sleep(5000);
-            
-                //System.Windows.Forms.MessageBox.Show(cmd.StandardOutput.ReadToEnd());
                 return resultList;
             }
             catch (Exception ex)
