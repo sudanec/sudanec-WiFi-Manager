@@ -7,13 +7,13 @@
   IgnorableNamespaces="uap rescap">
 
   <Identity
-    Name="a13aac28-2a34-48f5-b700-e763f3a83926"
-    Publisher="CN=sudan"
-    Version="1.0.0.0" />
+    Name="62283sudanec.WiFiManager"
+    Publisher="CN=40DAAD12-EC27-4BE9-A07A-81768A0E3186"
+    Version="2.0.1.0" />
 
   <Properties>
-    <DisplayName>sudanec WiFi Manager</DisplayName>
-    <PublisherDisplayName>sudan</PublisherDisplayName>
+    <DisplayName>WiFi Manager</DisplayName>
+    <PublisherDisplayName>sudanec</PublisherDisplayName>
     <Logo>Images\StoreLogo.png</Logo>
   </Properties>
 
@@ -31,7 +31,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="sudanec WiFi Manager"
+        DisplayName="WiFi Manager"
         Description="sudanec WiFi Manager"
         BackgroundColor="transparent"
         Square150x150Logo="Images\Square150x150Logo.png"
