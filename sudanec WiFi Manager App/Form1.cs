@@ -9,10 +9,11 @@ namespace sudanec_WiFi_Manager_App
                 this.StartPosition = FormStartPosition.CenterScreen;
                 InitializeComponent();
                 button2.Enabled = CheckExcelPresent();
+                button4.Enabled = CheckExcelPresent();
                 SetTooltips();
                 //Task.Run(LoadNetworksToGrid);
                 LoadNetworksToGrid();
-                LoadWiFisToGrid();
+                LoadWiFisToGrid(true);
             }
             catch (Exception ex)
             {
@@ -28,6 +29,8 @@ namespace sudanec_WiFi_Manager_App
                 ToolTip1.SetToolTip(button1, "Opens the author's website with donate options");
                 System.Windows.Forms.ToolTip ToolTip2 = new System.Windows.Forms.ToolTip();
                 ToolTip1.SetToolTip(button2, "Exports data to Microsoft Excel (only available when Microsoft Excel is installed on the machine)");
+                System.Windows.Forms.ToolTip ToolTip3 = new System.Windows.Forms.ToolTip();
+                ToolTip1.SetToolTip(button4, "Exports data to Microsoft Excel (only available when Microsoft Excel is installed on the machine)");
             }
             catch { }
         }
@@ -58,17 +61,20 @@ namespace sudanec_WiFi_Manager_App
             try
             {
                 loadingFrm.setMessage("Loading available WiFi. Please wait.");
-                //loadingFrm.Show();
+                loadingFrm.Show();
                 loadingFrm.TopMost = true;
                 loadingFrm.Refresh();
                 if(refresh) await NativeWifiData.RefreshAsync();
                 System.Data.DataTable dt = new System.Data.DataTable();
                 dt = await Task.Run(() =>
                 {
-                    dt.Columns.Add("Network", typeof(string));
+                    dt.Columns.Add("Network (SSID)", typeof(string));
                     dt.Columns.Add("Signal", typeof(string));
-                    dt.Columns.Add("Cipher", typeof(string));
-                    dt.Columns.Add("Auth", typeof(string));
+                    dt.Columns.Add("AP MAC address (BSSID)", typeof(string));
+                    dt.Columns.Add("Link quality", typeof(string));
+                    dt.Columns.Add("Band / frequency", typeof(string));
+                    dt.Columns.Add("Channel", typeof(string));
+                    dt.Columns.Add("BSS type", typeof(string));
 
                     int j;
                     List<List<string>> wifis = NativeWifiData.getAllAvailableWifi();
@@ -187,34 +193,7 @@ namespace sudanec_WiFi_Manager_App
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            try
-            {
-                copyAlltoClipboard();
-                Microsoft.Office.Interop.Excel.Application xlexcel;
-                Microsoft.Office.Interop.Excel.Workbook xlWorkBook;
-                Microsoft.Office.Interop.Excel.Worksheet xlWorkSheet;
-                object misValue = System.Reflection.Missing.Value;
-                xlexcel = new Microsoft.Office.Interop.Excel.Application();
-                xlexcel.ScreenUpdating = false;
-                xlexcel.Visible = true;
-                xlWorkBook = xlexcel.Workbooks.Add(misValue);
-                xlWorkSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
-                Microsoft.Office.Interop.Excel.Range CR = (Microsoft.Office.Interop.Excel.Range)xlWorkSheet.Cells[1, 1];
-                CR.Select();
-                xlWorkSheet.PasteSpecial(CR, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, true);
-                xlWorkSheet.Columns[1].Delete();
-                xlWorkSheet.Columns.AutoFit();
-                xlWorkSheet.get_Range("A1").Select();
-                xlexcel.ScreenUpdating = true;
-
-                if (dataGridView1.Rows.Count > 0)
-                {
-                    dataGridView1.CurrentCell = dataGridView1[1, 0];
-                }
-            } catch (Exception ex)
-            {
-                System.Windows.Forms.MessageBox.Show("An error occurred when exporting to MS Excel: " + ex.Message, "sudanec WiFi Manager .::. Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            OfficeTools.Export_Excel(dataGridView1);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -225,6 +204,11 @@ namespace sudanec_WiFi_Manager_App
         private void button3_Click(object sender, EventArgs e)
         {
             LoadWiFisToGrid(true);
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            OfficeTools.Export_Excel(dataGridView2);
         }
     }
 }

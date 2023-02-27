@@ -15,23 +15,39 @@ namespace sudanec_WiFi_Manager_App
             {
                 //List<string> temp = NativeWifi.EnumerateAvailableNetworkSsids().Select(x => x.ToString()).Distinct().ToList();
                 List<List<string>> returner = new List<List<string>>();
-                var temp = NativeWifi.EnumerateAvailableNetworks()
-                    .Where(x => !string.IsNullOrWhiteSpace(x.ProfileName))
-                    .OrderByDescending(x => x.SignalQuality);
-                    //.Distinct();
+                //var temp = NativeWifi.EnumerateAvailableNetworks()
+                var temp = NativeWifi.EnumerateBssNetworks()
+                    .Where(x => !string.IsNullOrWhiteSpace(x.Ssid.ToString()))
+                    .OrderByDescending(x => x.SignalStrength)//SignalQuality)
+                    .Distinct();
                 
                 if (temp is null) { return new List<List<string>>(); }
 
-                foreach(AvailableNetworkPack network in temp)
+                foreach (BssNetworkPack network in temp)
                 {
-                    System.Windows.Forms.MessageBox.Show("macka");
+                    List<string> WiFi = new List<string>();
+                    WiFi.Add(network.Ssid.ToString());
+                    WiFi.Add(network.SignalStrength.ToString());
+                    WiFi.Add(network.Bssid.ToString());
+                    WiFi.Add(network.LinkQuality.ToString());
+                    WiFi.Add(network.Band.ToString() + " / " + network.Frequency.ToString());
+                    WiFi.Add(network.Channel.ToString());
+                    WiFi.Add(network.BssType.ToString());
+                    returner.Add(WiFi);
+                }
+
+                /*foreach (AvailableNetworkPack network in temp)
+                {
+                    //System.Windows.Forms.MessageBox.Show("macka");
                     List<string> WiFi = new List<string>();
                     WiFi.Add(network.Ssid.ToString());
                     WiFi.Add(network.SignalQuality.ToString());
                     WiFi.Add(network.CipherAlgorithm.ToString());
                     WiFi.Add(network.AuthenticationAlgorithm.ToString());
+                    WiFi.Add(network.BssType.ToString());
+                    WiFi.Add(network.ProfileName.ToString());
                     returner.Add(WiFi);
-                }
+                }*/
                 return returner;
 
             }
