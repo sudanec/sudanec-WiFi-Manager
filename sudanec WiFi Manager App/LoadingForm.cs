@@ -20,7 +20,17 @@ namespace sudanec_WiFi_Manager_App
             this.StartPosition = FormStartPosition.CenterScreen;
         }
 
+        public void setMessage(string newText)
+        {
+            LoadingLabel.Text = newText;
+        }
+
         private void LoadingForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void LoadingLabel_Click(object sender, EventArgs e)
         {
 
         }

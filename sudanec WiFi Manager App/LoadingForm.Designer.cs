@@ -37,10 +37,11 @@
             this.LoadingLabel.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.LoadingLabel.Location = new System.Drawing.Point(106, 75);
             this.LoadingLabel.Name = "LoadingLabel";
-            this.LoadingLabel.Size = new System.Drawing.Size(326, 30);
+            this.LoadingLabel.Size = new System.Drawing.Size(97, 30);
             this.LoadingLabel.TabIndex = 0;
-            this.LoadingLabel.Text = "Loading WiFi profiles. Please wait.";
+            this.LoadingLabel.Text = "Loading..";
             this.LoadingLabel.UseWaitCursor = true;
+            this.LoadingLabel.Click += new System.EventHandler(this.LoadingLabel_Click);
             // 
             // LoadingForm
             // 

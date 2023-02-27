@@ -12,6 +12,7 @@ namespace sudanec_WiFi_Manager_App
                 SetTooltips();
                 //Task.Run(LoadNetworksToGrid);
                 LoadNetworksToGrid();
+                LoadWiFisToGrid();
             }
             catch (Exception ex)
             {
@@ -51,19 +52,63 @@ namespace sudanec_WiFi_Manager_App
             }
         }
 
-        //private void LoadNetworksToGrid()
-        private async Task LoadNetworksToGrid()
+        private async Task LoadWiFisToGrid(bool refresh = false)
         {
-            LoadingForm frm = new LoadingForm();
+            LoadingForm loadingFrm = new LoadingForm();
             try
             {
-                frm.Show();
-                frm.TopMost = true;
-                frm.Refresh();
+                loadingFrm.setMessage("Loading available WiFi. Please wait.");
+                //loadingFrm.Show();
+                loadingFrm.TopMost = true;
+                loadingFrm.Refresh();
+                if(refresh) await NativeWifiData.RefreshAsync();
                 System.Data.DataTable dt = new System.Data.DataTable();
                 dt = await Task.Run(() =>
                 {
-                    System.Threading.Thread.Sleep(7000);
+                    dt.Columns.Add("Network", typeof(string));
+                    dt.Columns.Add("Signal", typeof(string));
+                    dt.Columns.Add("Cipher", typeof(string));
+                    dt.Columns.Add("Auth", typeof(string));
+
+                    int j;
+                    List<List<string>> wifis = NativeWifiData.getAllAvailableWifi();
+
+                    foreach (List<string> network in wifis)
+                    {
+                        System.Data.DataRow row1 = dt.NewRow();
+                        
+                        for (j = 0; j < network.Count; j++) { row1[j] = network[j]; }
+                        dt.Rows.Add(row1);
+                    }
+                    return dt;
+                });
+                dataGridView2.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+                dataGridView2.AutoResizeColumns();
+                dataGridView2.ReadOnly = true;
+                dataGridView2.DataSource = dt;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show("Following error occurred when loading available WiFi networks: " + ex.Message, "sudanec WiFi Manager .::. Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                loadingFrm.Close();
+            }
+        }
+
+            private async Task LoadNetworksToGrid()
+        {
+            LoadingForm loadingFrm = new LoadingForm();
+            try
+            {
+                loadingFrm.setMessage("Loading WiFi profiles. Please wait.");
+                loadingFrm.Show();
+                loadingFrm.TopMost = true;
+                loadingFrm.Refresh();
+                System.Data.DataTable dt = new System.Data.DataTable();
+                dt = await Task.Run(() =>
+                {
                     dt.Columns.Add("Network", typeof(string));
                     dt.Columns.Add("Type", typeof(string));
                     dt.Columns.Add("Radio", typeof(string));
@@ -78,7 +123,6 @@ namespace sudanec_WiFi_Manager_App
                     int i, j;
                     List<string> wifis = WiFiData.getAllWiFiProfiles();
                     List<string> wifiDetails = new List<string>();
-
 
                     for (i = 0; i < wifis.Count; i++)
                     {
@@ -101,7 +145,7 @@ namespace sudanec_WiFi_Manager_App
             }
             finally
             {
-                frm.Close();
+                loadingFrm.Close();
             }
         }
 
@@ -171,6 +215,16 @@ namespace sudanec_WiFi_Manager_App
             {
                 System.Windows.Forms.MessageBox.Show("An error occurred when exporting to MS Excel: " + ex.Message, "sudanec WiFi Manager .::. Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            LoadWiFisToGrid(true);
         }
     }
 }
